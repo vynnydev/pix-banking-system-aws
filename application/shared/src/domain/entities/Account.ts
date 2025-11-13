@@ -99,6 +99,10 @@ export class Account {
     this.props.updatedAt = new Date();
   }
 
+  hasBalance(amount: number): boolean {
+    return this.props.balance >= amount;
+  }
+
   close(): void {
     if (this.props.balance !== 0) {
       throw new Error('Cannot close account with non-zero balance');

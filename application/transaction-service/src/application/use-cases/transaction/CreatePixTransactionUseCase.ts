@@ -26,7 +26,7 @@ export class CreatePixTransactionUseCase {
     const transactionAmount = new Money(dto.amount);
 
     // Check if sender has sufficient balance
-    if (!senderAccount.hasBalance(transactionAmount.getValue())) {
+    if (senderAccount.balance < transactionAmount.getValue()) {
       throw new ValidationError('Insufficient balance');
     }
 

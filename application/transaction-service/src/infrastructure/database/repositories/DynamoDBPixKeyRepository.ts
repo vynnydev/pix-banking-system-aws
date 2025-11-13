@@ -1,33 +1,35 @@
-import { GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
-import { dynamoDBClient, PixKey } from '@pix-banking/shared';
+import { QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { dynamoDBClient } from '@pix-banking/shared';
 import { IPixKeyRepository } from '../../../domain/repositories/IPixKeyRepository';
+import { PixKey } from '@pix-banking/shared';
 
 export class DynamoDBPixKeyRepository implements IPixKeyRepository {
-  private tableName: string;
+  constructor(private tableName: string) {}
 
-  constructor(tableName: string) {
-    this.tableName = tableName;
-  }
-
-  async findByKey(pixKey: string): Promise<PixKey | null> {
-    const command = new GetCommand({
+  async findByKey(keyValue: string): Promise<PixKey | null> {
+    const command = new QueryCommand({
       TableName: this.tableName,
-      Key: { pixKey },
+      IndexName: 'keyValue-index',
+      KeyConditionExpression: 'keyValue = :keyValue',
+      ExpressionAttributeValues: {
+        ':keyValue': keyValue,
+      },
     });
 
     const result = await dynamoDBClient.send(command);
 
-    if (!result.Item) {
+    if (!result.Items || result.Items.length === 0) {
       return null;
     }
 
+    const item = result.Items[0];
+
     return PixKey.reconstitute({
-      pixKeyId: result.Item.pixKeyId,
-      accountId: result.Item.accountId,
-      pixKey: result.Item.pixKey,
-      pixKeyType: result.Item.pixKeyType,
-      status: result.Item.status,
-      createdAt: new Date(result.Item.createdAt),
+      pixKeyId: item.pixKeyId,  // ✅ CORRETO (não pixKey)
+      accountId: item.accountId,
+      keyType: item.keyType,
+      keyValue: item.keyValue,
+      createdAt: new Date(item.createdAt),
     });
   }
 
@@ -43,17 +45,16 @@ export class DynamoDBPixKeyRepository implements IPixKeyRepository {
 
     const result = await dynamoDBClient.send(command);
 
-    if (!result.Items || result.Items.length === 0) {
+    if (!result.Items) {
       return [];
     }
 
-    return result.Items.map((item: any) =>
+    return result.Items.map((item) =>
       PixKey.reconstitute({
-        pixKeyId: item.pixKeyId,
+        pixKeyId: item.pixKeyId,  // ✅ CORRETO (não pixKey)
         accountId: item.accountId,
-        pixKey: item.pixKey,
-        pixKeyType: item.pixKeyType,
-        status: item.status,
+        keyType: item.keyType,
+        keyValue: item.keyValue,
         createdAt: new Date(item.createdAt),
       })
     );

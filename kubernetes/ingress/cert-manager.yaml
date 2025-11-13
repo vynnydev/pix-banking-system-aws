@@ -19,7 +19,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: api-gateway-cert
-  namespace: microservices
+  namespace: pix-microservices
 spec:
   secretName: api-gateway-tls
   issuerRef:

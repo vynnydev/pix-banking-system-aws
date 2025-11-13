@@ -136,18 +136,35 @@ module "eks" {
 }
 
 # ==============================================================================
-# ElastiCache Module (optional - coming next)
+# ElastiCache Module
 # ==============================================================================
 
-# module "elasticache" {
-#   count  = var.enable_elasticache ? 1 : 0
-#   source = "./modules/elasticache"
-#
-#   project_name       = local.project_name
-#   vpc_id             = module.vpc.vpc_id
-#   private_subnet_ids = module.vpc.private_subnet_ids
-#   node_type          = var.elasticache_node_type
-#   common_tags        = local.common_tags
-#
-#   depends_on = [module.vpc]
-# }
+module "elasticache" {
+  count  = var.enable_elasticache ? 1 : 0
+  source = "./modules/elasticache"
+
+  project_name       = local.project_name
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+  
+  # Node Configuration (cost optimized)
+  node_type            = var.elasticache_node_type  # cache.t3.micro
+  redis_version        = "7.0"
+  parameter_group_family = "redis7"
+  
+  # Security - allow access from EKS nodes
+  allowed_security_group_ids = [module.eks.node_security_group_id]
+  
+  # Backup Configuration
+  snapshot_retention_limit = 1  # Keep only 1 day of snapshots
+  maintenance_window       = "sun:05:00-sun:06:00"
+  snapshot_window          = "03:00-04:00"
+  
+  # Monitoring
+  enable_cloudwatch_alarms = true
+  alarm_actions            = []  # Add SNS topic ARN if you want notifications
+  
+  common_tags = local.common_tags
+
+  depends_on = [module.vpc, module.eks]
+}

@@ -71,15 +71,21 @@ output "ecr_repository_urls" {
 }
 
 # ElastiCache Outputs
-# output "redis_endpoint" {
-#   description = "Redis endpoint"
-#   value       = var.enable_elasticache ? module.elasticache[0].redis_endpoint : null
-# }
+output "redis_endpoint" {
+  description = "Redis endpoint"
+  value       = var.enable_elasticache ? module.elasticache[0].redis_endpoint : null
+}
 
-# output "redis_port" {
-#   description = "Redis port"
-#   value       = var.enable_elasticache ? module.elasticache[0].redis_port : null
-# }
+output "redis_port" {
+  description = "Redis port"
+  value       = var.enable_elasticache ? module.elasticache[0].redis_port : null
+}
+
+output "redis_connection_string" {
+  description = "Redis connection string"
+  value       = var.enable_elasticache ? module.elasticache[0].redis_connection_string : null
+  sensitive   = true
+}
 
 # IAM Outputs
 output "eks_node_role_arn" {

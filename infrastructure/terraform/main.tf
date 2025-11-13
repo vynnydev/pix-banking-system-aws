@@ -105,26 +105,35 @@ module "iam" {
 }
 
 # ==============================================================================
-# EKS Module (coming next)
+# EKS Module (SIMPLIFIED)
 # ==============================================================================
 
-# module "eks" {
-#   source = "./modules/eks"
-#
-#   project_name          = local.project_name
-#   vpc_id                = module.vpc.vpc_id
-#   private_subnet_ids    = module.vpc.private_subnet_ids
-#   cluster_version       = var.eks_cluster_version
-#   node_instance_type    = var.eks_node_instance_type
-#   node_desired_size     = var.eks_node_desired_size
-#   node_min_size         = var.eks_node_min_size
-#   node_max_size         = var.eks_node_max_size
-#   cluster_role_arn      = module.iam.eks_cluster_role_arn
-#   node_role_arn         = module.iam.eks_node_role_arn
-#   common_tags           = local.common_tags
-#
-#   depends_on = [module.vpc, module.iam]
-# }
+module "eks" {
+  source = "./modules/eks"
+
+  project_name       = local.project_name
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+  
+  # Cluster Configuration
+  cluster_version                      = var.eks_cluster_version
+  cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
+  
+  # Node Group Configuration (COST OPTIMIZED)
+  node_instance_type = "t3.small"  # Cheaper than t3.medium
+  node_desired_size  = 2
+  node_min_size      = 1
+  node_max_size      = 3
+  node_disk_size     = 30  # Reduced disk size
+  
+  # IAM Roles
+  cluster_role_arn = module.iam.eks_cluster_role_arn
+  node_role_arn    = module.iam.eks_node_role_arn
+  
+  common_tags = local.common_tags
+
+  depends_on = [module.vpc, module.iam]
+}
 
 # ==============================================================================
 # ElastiCache Module (optional - coming next)

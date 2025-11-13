@@ -15,27 +15,27 @@ output "public_subnet_ids" {
 }
 
 # EKS Outputs
-# output "eks_cluster_id" {
-#   description = "EKS cluster ID"
-#   value       = module.eks.cluster_id
-# }
+output "eks_cluster_id" {
+  description = "EKS cluster ID"
+  value       = module.eks.cluster_id
+}
 
-# output "eks_cluster_endpoint" {
-#   description = "EKS cluster endpoint"
-#   value       = module.eks.cluster_endpoint
-#   sensitive   = true
-# }
+output "eks_cluster_endpoint" {
+  description = "EKS cluster endpoint"
+  value       = module.eks.cluster_endpoint
+  sensitive   = true
+}
 
-# output "eks_cluster_certificate_authority_data" {
-#   description = "EKS cluster certificate authority data"
-#   value       = module.eks.cluster_certificate_authority_data
-#   sensitive   = true
-# }
+output "eks_cluster_certificate_authority_data" {
+  description = "EKS cluster certificate authority data"
+  value       = module.eks.cluster_certificate_authority_data
+  sensitive   = true
+}
 
-# output "eks_cluster_name" {
-#   description = "EKS cluster name"
-#   value       = module.eks.cluster_name
-# }
+output "eks_cluster_name" {
+  description = "EKS cluster name"
+  value       = module.eks.cluster_name
+}
 
 # DynamoDB Outputs
 output "dynamodb_table_names" {
@@ -93,13 +93,13 @@ output "eks_cluster_role_arn" {
 }
 
 # Kubeconfig Command
-# output "kubeconfig_command" {
-#   description = "Command to configure kubectl"
-#   value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}"
-# }
+output "kubeconfig_command" {
+  description = "Command to configure kubectl"
+  value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}"
+}
 
 # ECR Login Command
-# output "ecr_login_command" {
-#   description = "Command to login to ECR"
-#   value       = "aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${module.ecr.registry_url}"
-# }
+output "ecr_login_command" {
+  description = "Command to login to ECR"
+  value       = "aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${module.ecr.registry_url}"
+}

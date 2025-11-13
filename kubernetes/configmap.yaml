@@ -1,9 +1,8 @@
-# DynamoDB ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dynamodb-config
-  namespace: microservices
+  namespace: pix-microservices
 data:
   users_table: "pix-banking-system-dev-users"
   accounts_table: "pix-banking-system-dev-accounts"
@@ -11,30 +10,27 @@ data:
   pixkeys_table: "pix-banking-system-dev-pixkeys"
   notifications_table: "pix-banking-system-dev-notifications"
 ---
-# Redis ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: redis-config
-  namespace: microservices
+  namespace: pix-microservices
 data:
-  host: "pix-banking-system-dev-redis.4k6mni.0001.use1.cache.amazonaws.com"  # From Terraform output
+  host: "pix-banking-system-dev-redis.4k6mni.0001.use1.cache.amazonaws.com"
   port: "6379"
 ---
-# SNS ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sns-config
-  namespace: microservices
+  namespace: pix-microservices
 data:
-  topic_arn: "arn:aws:sns:us-east-1:347277718217:pix-banking-system-dev-pix-transactions"  # From Terraform output
+  topic_arn: "arn:aws:sns:us-east-1:347277718217:pix-banking-system-dev-pix-transactions"
 ---
-# SQS ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sqs-config
-  namespace: microservices
+  namespace: pix-microservices
 data:
-  queue_url: "https://sqs.us-east-1.amazonaws.com/347277718217/pix-banking-system-dev-settlement-queue"  # From Terraform output
+  queue_url: "https://sqs.us-east-1.amazonaws.com/347277718217/pix-banking-system-dev-settlement-queue"

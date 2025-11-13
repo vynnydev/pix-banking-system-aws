@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: auth-service-hpa
-  namespace: microservices
+  namespace: pix-microservices
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

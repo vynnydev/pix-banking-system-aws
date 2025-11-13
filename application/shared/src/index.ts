@@ -1,11 +1,11 @@
-// Entities (exporta TransactionStatusEnum de Transaction.ts)
+// Entities
 export * from './domain/entities/User';
 export * from './domain/entities/Account';
 export * from './domain/entities/Transaction';
 export * from './domain/entities/PixKey';
 export * from './domain/entities/Notification';
 
-// Value Objects (exporta TransactionStatus class)
+// Value Objects
 export * from './domain/value-objects/Email';
 export * from './domain/value-objects/CPF';
 export * from './domain/value-objects/Money';
@@ -29,3 +29,4 @@ export * from './infrastructure/database/DynamoDBClient';
 export * from './infrastructure/database/repositories/BaseRepository';
 export * from './infrastructure/messaging/SNSPublisher';
 export * from './infrastructure/messaging/SQSConsumer';
+export * from './infrastructure/cache/RedisClient';

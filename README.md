@@ -531,7 +531,7 @@ curl http://$ALB_URL/api/settlement/health
 ![Insecure Pod](./docs/images/fourth-stage/pod-inseguro-root.png)
 
 #### 4.4 Permissões Restritas (RBAC)
-![Permissions](./docs/images/fourth-stage/permissões.png)
+![Permissions](./docs/images/fourth-stage/permissoes.png)
 ![No Permission](./docs/images/fourth-stage/transação-sem-permissão.png)
 
 **✅ Evidências coletadas:**

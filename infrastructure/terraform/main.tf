@@ -42,13 +42,13 @@ module "vpc" {
 # DynamoDB Module (coming next)
 # ==============================================================================
 
-# module "dynamodb" {
-#   source = "./modules/dynamodb"
-#
-#   project_name  = local.project_name
-#   billing_mode  = var.dynamodb_billing_mode
-#   common_tags   = local.common_tags
-# }
+module "dynamodb" {
+  source = "./modules/dynamodb"
+
+  project_name  = local.project_name
+  billing_mode  = var.dynamodb_billing_mode
+  common_tags   = local.common_tags
+}
 
 # ==============================================================================
 # SNS/SQS Module (coming next)

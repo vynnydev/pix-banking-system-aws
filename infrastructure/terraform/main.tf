@@ -168,3 +168,22 @@ module "elasticache" {
 
   depends_on = [module.vpc, module.eks]
 }
+
+# ==============================================================================
+# ALB API Gateway Ingress Controller Module (IAM Only)
+# ==============================================================================
+
+module "alb_controller" {
+  count  = var.enable_alb_controller ? 1 : 0
+  source = "./modules/alb-api-gateway-ingress-controller"
+
+  project_name      = local.project_name
+  cluster_name      = module.eks.cluster_name
+  vpc_id            = module.vpc.vpc_id
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.cluster_oidc_issuer_url
+  
+  common_tags = local.common_tags
+
+  depends_on = [module.eks]
+}

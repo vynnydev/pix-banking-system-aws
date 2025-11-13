@@ -1,41 +1,53 @@
-FROM node:20-alpine AS builder
+# ==============================================================================
+# Multi-stage Dockerfile for TypeScript Microservice
+# ==============================================================================
+
+# Stage 1: Build
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy shared package
-COPY application/shared ./shared
-WORKDIR /app/shared
-RUN npm ci && npm run build
+# Copy package files
+COPY package*.json ./
 
-# Copy transaction-service
-WORKDIR /app/transaction-service
-COPY application/transaction-service/package*.json ./
+# Install ALL dependencies (including devDependencies for build)
 RUN npm ci
 
-COPY application/transaction-service/tsconfig.json ./
-COPY application/transaction-service/src ./src
+# Copy source code and config
+COPY tsconfig.json ./
+COPY src ./src
+
+# Build TypeScript
 RUN npm run build
 
-# Production stage
-FROM node:20-alpine
+# Stage 2: Production
+FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
+COPY package*.json ./
+
+# Install ONLY production dependencies
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Copy built JavaScript from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
-# Copy shared
-COPY --from=builder --chown=nodejs:nodejs /app/shared/dist ./shared/dist
-COPY --from=builder --chown=nodejs:nodejs /app/shared/node_modules ./shared/node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/shared/package.json ./shared/
-
-# Copy transaction-service
-COPY --from=builder --chown=nodejs:nodejs /app/transaction-service/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /app/transaction-service/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/transaction-service/package.json ./
+    adduser -S nodejs -u 1001 && \
+    chown -R nodejs:nodejs /app
 
 USER nodejs
 
-EXPOSE 3002
+# Expose port
+EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Start application (adjust the path based on your main file)
 CMD ["node", "dist/index.js"]

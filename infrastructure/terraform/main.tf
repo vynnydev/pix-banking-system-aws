@@ -54,12 +54,12 @@ module "dynamodb" {
 # SNS/SQS Module (coming next)
 # ==============================================================================
 
-# module "sns_sqs" {
-#   source = "./modules/sns-sqs"
-#
-#   project_name = local.project_name
-#   common_tags  = local.common_tags
-# }
+module "sns_sqs" {
+  source = "./modules/sns-sqs"
+
+  project_name = local.project_name
+  common_tags  = local.common_tags
+}
 
 # ==============================================================================
 # ECR Module (coming next)

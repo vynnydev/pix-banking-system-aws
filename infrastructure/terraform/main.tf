@@ -65,23 +65,44 @@ module "sns_sqs" {
 # ECR Module (coming next)
 # ==============================================================================
 
-# module "ecr" {
-#   source = "./modules/ecr"
-#
-#   project_name = local.project_name
-#   common_tags  = local.common_tags
-# }
+module "ecr" {
+  source = "./modules/ecr"
+
+  project_name                  = local.project_name
+  image_tag_mutability          = "MUTABLE"
+  scan_on_push                  = true
+  enable_kms_encryption         = false  # Set to true for production
+  max_image_count               = 30
+  untagged_image_retention_days = 7
+  
+  # Allow EKS nodes to pull images (will be updated after IAM module)
+  allowed_principal_arns = ["*"]  # TODO: Restrict after IAM module
+  
+  common_tags = local.common_tags
+}
 
 # ==============================================================================
 # IAM Module (coming next)
 # ==============================================================================
 
-# module "iam" {
-#   source = "./modules/iam"
-#
-#   project_name = local.project_name
-#   common_tags  = local.common_tags
-# }
+module "iam" {
+  source = "./modules/iam"
+
+  project_name = local.project_name
+  aws_region   = var.aws_region
+  
+  # IRSA Configuration (disabled until EKS is created)
+  enable_irsa         = false  # ← IMPORTANTE: false na primeira execução
+  oidc_provider_url   = ""
+  
+  # Kubernetes Configuration
+  kubernetes_namespace = "default"
+  
+  # ALB Controller (will be created after EKS)
+  enable_alb_controller = true
+  
+  common_tags = local.common_tags
+}
 
 # ==============================================================================
 # EKS Module (coming next)

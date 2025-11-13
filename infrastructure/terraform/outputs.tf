@@ -38,39 +38,39 @@ output "public_subnet_ids" {
 # }
 
 # DynamoDB Outputs
-# output "dynamodb_table_names" {
-#   description = "DynamoDB table names"
-#   value       = module.dynamodb.table_names
-# }
+output "dynamodb_table_names" {
+  description = "DynamoDB table names"
+  value       = module.dynamodb.table_names
+}
 
-# output "dynamodb_table_arns" {
-#   description = "DynamoDB table ARNs"
-#   value       = module.dynamodb.table_arns
-# }
+output "dynamodb_table_arns" {
+  description = "DynamoDB table ARNs"
+  value       = module.dynamodb.table_arns
+}
 
 # SNS/SQS Outputs
-# output "sns_topic_arn" {
-#   description = "SNS topic ARN"
-#   value       = module.sns_sqs.sns_topic_arn
-# }
+output "sns_topic_arn" {
+  description = "SNS topic ARN"
+  value       = module.sns_sqs.sns_topic_arn
+}
 
-# output "sqs_queue_url" {
-#   description = "SQS queue URL"
-#   value       = module.sns_sqs.sqs_queue_url
-# }
+output "sqs_queue_url" {
+  description = "SQS queue URL"
+  value       = module.sns_sqs.sqs_queue_url
+}
 
-# output "sqs_queue_arn" {
-#   description = "SQS queue ARN"
-#   value       = module.sns_sqs.sqs_queue_arn
-# }
+output "sqs_queue_arn" {
+  description = "SQS queue ARN"
+  value       = module.sns_sqs.sqs_queue_arn
+}
 
 # ECR Outputs
-# output "ecr_repository_urls" {
-#   description = "ECR repository URLs"
-#   value       = module.ecr.repository_urls
-# }
+output "ecr_repository_urls" {
+  description = "ECR repository URLs"
+  value       = module.ecr.repository_urls
+}
 
-# # ElastiCache Outputs
+# ElastiCache Outputs
 # output "redis_endpoint" {
 #   description = "Redis endpoint"
 #   value       = var.enable_elasticache ? module.elasticache[0].redis_endpoint : null
@@ -82,15 +82,15 @@ output "public_subnet_ids" {
 # }
 
 # IAM Outputs
-# output "eks_node_role_arn" {
-#   description = "EKS node IAM role ARN"
-#   value       = module.iam.eks_node_role_arn
-# }
+output "eks_node_role_arn" {
+  description = "EKS node IAM role ARN"
+  value       = module.iam.eks_node_role_arn
+}
 
-# output "eks_cluster_role_arn" {
-#   description = "EKS cluster IAM role ARN"
-#   value       = module.iam.eks_cluster_role_arn
-# }
+output "eks_cluster_role_arn" {
+  description = "EKS cluster IAM role ARN"
+  value       = module.iam.eks_cluster_role_arn
+}
 
 # Kubeconfig Command
 # output "kubeconfig_command" {

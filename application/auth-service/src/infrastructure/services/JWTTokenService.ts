@@ -1,23 +1,19 @@
 import { generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken } from '@pix-banking/shared';
-import { ITokenService, TokenPair } from '../../domain/services/ITokenService';
+import { ITokenService, JWTPayload, TokenPair } from '../../domain/services/ITokenService';
 
 export class JWTTokenService implements ITokenService {
-  generateTokenPair(userId: string, email: string): TokenPair {
-    const accessToken = generateAccessToken({ userId, email });
-    const refreshToken = generateRefreshToken({ userId, email });
-
+  generateTokens(payload: JWTPayload): TokenPair {  // ← RENOMEAR
     return {
-      accessToken,
-      refreshToken,
-      expiresIn: 3600, // 1 hour in seconds
+      accessToken: generateAccessToken(payload),
+      refreshToken: generateRefreshToken(payload),
     };
   }
 
-  verifyAccessToken(token: string): { userId: string; email: string } {
+  verifyAccessToken(token: string): JWTPayload {
     return verifyAccessToken(token);
   }
 
-  verifyRefreshToken(token: string): { userId: string; email: string } {
+  verifyRefreshToken(token: string): JWTPayload {
     return verifyRefreshToken(token);
   }
 }

@@ -1,23 +1,19 @@
-import { PutCommand, GetCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
-import { dynamoDBClient, PixKey } from '@pix-banking/shared';
+import { PutCommand, GetCommand, DeleteCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { dynamoDBClient } from '@pix-banking/shared';
 import { IPixKeyRepository } from '../../../domain/repositories/IPixKeyRepository';
+import { PixKey } from '@pix-banking/shared';
 
 export class DynamoDBPixKeyRepository implements IPixKeyRepository {
-  private tableName: string;
-
-  constructor(tableName: string) {
-    this.tableName = tableName;
-  }
+  constructor(private tableName: string) {}
 
   async save(pixKey: PixKey): Promise<void> {
     const command = new PutCommand({
       TableName: this.tableName,
       Item: {
-        pixKey: pixKey.pixKey,
-        pixKeyId: pixKey.pixKeyId,
+        pixKeyId: pixKey.pixKeyId,        // ✅ Correto
         accountId: pixKey.accountId,
-        pixKeyType: pixKey.pixKeyType,
-        status: pixKey.status,
+        keyType: pixKey.keyType,          // ✅ Correto (não pixKeyType)
+        keyValue: pixKey.keyValue,        // ✅ Correto (não pixKey)
         createdAt: pixKey.createdAt.toISOString(),
       },
     });
@@ -25,25 +21,30 @@ export class DynamoDBPixKeyRepository implements IPixKeyRepository {
     await dynamoDBClient.send(command);
   }
 
-  async findByKey(pixKey: string): Promise<PixKey | null> {
-    const command = new GetCommand({
+  async findByKeyValue(keyValue: string): Promise<PixKey | null> {
+    const command = new QueryCommand({
       TableName: this.tableName,
-      Key: { pixKey },
+      IndexName: 'keyValue-index',
+      KeyConditionExpression: 'keyValue = :keyValue',
+      ExpressionAttributeValues: {
+        ':keyValue': keyValue,
+      },
     });
 
     const result = await dynamoDBClient.send(command);
-    
-    if (!result.Item) {
+
+    if (!result.Items || result.Items.length === 0) {
       return null;
     }
 
+    const item = result.Items[0];
+
     return PixKey.reconstitute({
-      pixKeyId: result.Item.pixKeyId,
-      accountId: result.Item.accountId,
-      pixKey: result.Item.pixKey,
-      pixKeyType: result.Item.pixKeyType,
-      status: result.Item.status,
-      createdAt: new Date(result.Item.createdAt),
+      pixKeyId: item.pixKeyId,
+      accountId: item.accountId,
+      keyType: item.keyType,
+      keyValue: item.keyValue,
+      createdAt: new Date(item.createdAt),
     });
   }
 
@@ -58,43 +59,55 @@ export class DynamoDBPixKeyRepository implements IPixKeyRepository {
     });
 
     const result = await dynamoDBClient.send(command);
-    
-    if (!result.Items || result.Items.length === 0) {
+
+    if (!result.Items) {
       return [];
     }
 
-    return result.Items.map(item => PixKey.reconstitute({
+    return result.Items.map((item) =>
+      PixKey.reconstitute({
+        pixKeyId: item.pixKeyId,
+        accountId: item.accountId,
+        keyType: item.keyType,
+        keyValue: item.keyValue,
+        createdAt: new Date(item.createdAt),
+      })
+    );
+  }
+
+  async findByKey(keyValue: string): Promise<PixKey | null> {
+    const command = new QueryCommand({
+      TableName: this.tableName,
+      IndexName: 'keyValue-index',
+      KeyConditionExpression: 'keyValue = :keyValue',
+      ExpressionAttributeValues: {
+        ':keyValue': keyValue,
+      },
+    });
+  
+    const result = await dynamoDBClient.send(command);
+  
+    if (!result.Items || result.Items.length === 0) {
+      return null;
+    }
+  
+    const item = result.Items[0];
+  
+    return PixKey.reconstitute({
       pixKeyId: item.pixKeyId,
       accountId: item.accountId,
-      pixKey: item.pixKey,
-      pixKeyType: item.pixKeyType,
-      status: item.status,
+      keyType: item.keyType,
+      keyValue: item.keyValue,
       createdAt: new Date(item.createdAt),
-    }));
+    });
   }
 
   async delete(pixKeyId: string): Promise<void> {
-    // First find the PIX key to get the partition key
-    const queryCommand = new QueryCommand({
+    const command = new DeleteCommand({
       TableName: this.tableName,
-      IndexName: 'pixKeyId-index',
-      KeyConditionExpression: 'pixKeyId = :pixKeyId',
-      ExpressionAttributeValues: {
-        ':pixKeyId': pixKeyId,
-      },
+      Key: { pixKeyId },
     });
 
-    const result = await dynamoDBClient.send(queryCommand);
-    
-    if (!result.Items || result.Items.length === 0) {
-      return;
-    }
-
-    const deleteCommand = new DeleteCommand({
-      TableName: this.tableName,
-      Key: { pixKey: result.Items[0].pixKey },
-    });
-
-    await dynamoDBClient.send(deleteCommand);
+    await dynamoDBClient.send(command);
   }
 }

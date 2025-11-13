@@ -15,15 +15,15 @@ export class DynamoDBAccountRepository implements IAccountRepository {
       Item: {
         accountId: account.accountId,
         userId: account.userId,
-        accountNumber: account.accountNumber,
-        agency: account.agency,
+        accountNumber: account.accountNumber,  // ← READICIONADO
+        agency: account.agency,                // ← READICIONADO
         balance: account.balance,
         status: account.status,
         createdAt: account.createdAt.toISOString(),
         updatedAt: account.updatedAt.toISOString(),
       },
     });
-
+  
     await dynamoDBClient.send(command);
   }
 

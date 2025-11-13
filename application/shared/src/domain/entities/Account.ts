@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 
+export type AccountStatus = 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
+
 export interface AccountProps {
   accountId: string;
   userId: string;
-  accountNumber: string;
-  agency: string;
+  accountNumber: string;  // ← ADICIONADO
+  agency: string;         // ← ADICIONADO
   balance: number;
-  status: 'ACTIVE' | 'BLOCKED' | 'CLOSED';
+  status: AccountStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,13 +20,13 @@ export class Account {
     this.props = props;
   }
 
-  static create(userId: string, accountNumber: string): Account {
+  static create(userId: string, accountNumber: string, agency: string = '0001'): Account {
     const now = new Date();
     return new Account({
       accountId: uuidv4(),
       userId,
       accountNumber,
-      agency: '0001',
+      agency,
       balance: 0,
       status: 'ACTIVE',
       createdAt: now,
@@ -56,13 +58,21 @@ export class Account {
     return this.props.balance;
   }
 
-  get status(): string {
+  get status(): AccountStatus {
     return this.props.status;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt;
   }
 
   credit(amount: number): void {
     if (amount <= 0) {
-      throw new Error('Amount must be greater than zero');
+      throw new Error('Credit amount must be positive');
     }
     this.props.balance += amount;
     this.props.updatedAt = new Date();
@@ -70,7 +80,7 @@ export class Account {
 
   debit(amount: number): void {
     if (amount <= 0) {
-      throw new Error('Amount must be greater than zero');
+      throw new Error('Debit amount must be positive');
     }
     if (this.props.balance < amount) {
       throw new Error('Insufficient balance');
@@ -79,8 +89,22 @@ export class Account {
     this.props.updatedAt = new Date();
   }
 
-  hasBalance(amount: number): boolean {
-    return this.props.balance >= amount;
+  suspend(): void {
+    this.props.status = 'SUSPENDED';
+    this.props.updatedAt = new Date();
+  }
+
+  activate(): void {
+    this.props.status = 'ACTIVE';
+    this.props.updatedAt = new Date();
+  }
+
+  close(): void {
+    if (this.props.balance !== 0) {
+      throw new Error('Cannot close account with non-zero balance');
+    }
+    this.props.status = 'CLOSED';
+    this.props.updatedAt = new Date();
   }
 
   toJSON() {

@@ -5,9 +5,8 @@ export type PixKeyType = 'CPF' | 'EMAIL' | 'PHONE' | 'RANDOM';
 export interface PixKeyProps {
   pixKeyId: string;
   accountId: string;
-  pixKey: string;
-  pixKeyType: PixKeyType;
-  status: 'ACTIVE' | 'INACTIVE';
+  keyType: PixKeyType;
+  keyValue: string;
   createdAt: Date;
 }
 
@@ -18,13 +17,16 @@ export class PixKey {
     this.props = props;
   }
 
-  static create(accountId: string, pixKey: string, pixKeyType: PixKeyType): PixKey {
+  static create(data: {
+    accountId: string;
+    keyType: PixKeyType;
+    keyValue: string;
+  }): PixKey {
     return new PixKey({
       pixKeyId: uuidv4(),
-      accountId,
-      pixKey,
-      pixKeyType,
-      status: 'ACTIVE',
+      accountId: data.accountId,
+      keyType: data.keyType,
+      keyValue: data.keyValue,
       createdAt: new Date(),
     });
   }
@@ -41,29 +43,24 @@ export class PixKey {
     return this.props.accountId;
   }
 
-  get pixKey(): string {
-    return this.props.pixKey;
+  get keyType(): PixKeyType {
+    return this.props.keyType;
   }
 
-  get pixKeyType(): PixKeyType {
-    return this.props.pixKeyType;
+  get keyValue(): string {
+    return this.props.keyValue;
   }
 
-  get status(): string {
-    return this.props.status;
-  }
-
-  deactivate(): void {
-    this.props.status = 'INACTIVE';
+  get createdAt(): Date {
+    return this.props.createdAt;
   }
 
   toJSON() {
     return {
       pixKeyId: this.props.pixKeyId,
       accountId: this.props.accountId,
-      pixKey: this.props.pixKey,
-      pixKeyType: this.props.pixKeyType,
-      status: this.props.status,
+      keyType: this.props.keyType,
+      keyValue: this.props.keyValue,
       createdAt: this.props.createdAt.toISOString(),
     };
   }

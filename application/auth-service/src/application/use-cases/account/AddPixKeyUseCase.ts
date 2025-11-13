@@ -23,7 +23,11 @@ export class AddPixKeyUseCase {
     }
 
     // Create new PIX key
-    const pixKey = PixKey.create(account.accountId, dto.pixKey, dto.pixKeyType);
+    const pixKey = PixKey.create({
+      accountId: account.accountId,
+      keyType: dto.pixKeyType,
+      keyValue: dto.pixKey, 
+    });
 
     // Save PIX key
     await this.pixKeyRepository.save(pixKey);

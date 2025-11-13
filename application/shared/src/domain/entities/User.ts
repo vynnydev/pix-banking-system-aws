@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcryptjs';
 
 export interface UserProps {
   userId: string;
-  email: string;
-  passwordHash: string;
+  name: string;
   fullName: string;
+  email: string;
   cpf: string;
   phone: string;
+  passwordHash: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,11 +20,26 @@ export class User {
     this.props = props;
   }
 
-  static create(data: Omit<UserProps, 'userId' | 'createdAt' | 'updatedAt'>): User {
+  // ✅ CORRIGIR: Retorno deve ser Promise<User>, não o tipo do parâmetro
+  static async create(data: {
+    name: string;
+    email: string;
+    fullName: string;
+    cpf: string;
+    phone: string;
+    password: string;
+  }): Promise<User> {  // ← Tipo de retorno explícito
+    const passwordHash = await bcrypt.hash(data.password, 10);
     const now = new Date();
+
     return new User({
-      ...data,
       userId: uuidv4(),
+      name: data.name,
+      email: data.email,
+      fullName: data.fullName,
+      cpf: data.cpf,
+      phone: data.phone,
+      passwordHash,
       createdAt: now,
       updatedAt: now,
     });
@@ -36,16 +53,16 @@ export class User {
     return this.props.userId;
   }
 
-  get email(): string {
-    return this.props.email;
-  }
-
-  get passwordHash(): string {
-    return this.props.passwordHash;
+  get name(): string {
+    return this.props.name;
   }
 
   get fullName(): string {
     return this.props.fullName;
+  }
+
+  get email(): string {
+    return this.props.email;
   }
 
   get cpf(): string {
@@ -56,6 +73,10 @@ export class User {
     return this.props.phone;
   }
 
+  get passwordHash(): string {
+    return this.props.passwordHash;
+  }
+
   get createdAt(): Date {
     return this.props.createdAt;
   }
@@ -64,9 +85,14 @@ export class User {
     return this.props.updatedAt;
   }
 
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.props.passwordHash);
+  }
+
   toJSON() {
     return {
       userId: this.props.userId,
+      name: this.props.name,
       email: this.props.email,
       fullName: this.props.fullName,
       cpf: this.props.cpf,

@@ -29,7 +29,10 @@ export class LoginUseCase {
     }
 
     // Generate tokens
-    const tokens = this.tokenService.generateTokenPair(user.userId, user.email);
+    const tokens = this.tokenService.generateTokens({
+      userId: user.userId,
+      email: user.email,
+    });
 
     return {
       user: user.toJSON(),

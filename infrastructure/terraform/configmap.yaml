@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dynamodb-config
+  namespace: microservices
+data:
+  users_table: "pix-banking-system-dev-users"
+  accounts_table: "pix-banking-system-dev-accounts"
+  transactions_table: "pix-banking-system-dev-transactions"
+  pixkeys_table: "pix-banking-system-dev-pixkeys"
+  notifications_table: "pix-banking-system-dev-notifications"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: microservices
+data:
+  host: "pix-banking-system-dev-redis.4k6mni.0001.use1.cache.amazonaws.com"
+  port: "6379"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sns-config
+  namespace: microservices
+data:
+  topic_arn: "arn:aws:sns:us-east-1:347277718217:pix-banking-system-dev-pix-transactions"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sqs-config
+  namespace: microservices
+data:
+  queue_url: "https://sqs.us-east-1.amazonaws.com/347277718217/pix-banking-system-dev-settlement-queue"

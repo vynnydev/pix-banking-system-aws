@@ -91,3 +91,10 @@ variable "common_tags" {
   type        = map(string)
   default     = {}
 }
+
+# ALB Ingress Controller (API Gateway Ingress Kubernetes)
+variable "enable_alb_controller" {
+  description = "ALB Ingress Controller (API Gateway Ingress Kubernetes)"
+  type = bool
+  default = true
+}

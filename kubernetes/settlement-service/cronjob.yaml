@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: settlement-cronjob
+  namespace: pix-microservices
+spec:
+  schedule: "0 */6 * * *"  # Every 6 hours
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        metadata:
+          labels:
+            app: settlement-cronjob
+        spec:
+          serviceAccountName: settlement-service
+          restartPolicy: OnFailure
+          containers:
+          - name: settlement-cronjob
+            image: 347277718217.dkr.ecr.us-east-1.amazonaws.com/pix-banking-system-dev-settlement-service:latest
+            command: ["node", "dist/cronjob.js"]
+            env:
+            - name: NODE_ENV
+              value: "production"
+            - name: AWS_REGION
+              value: "us-east-1"
+            - name: DYNAMODB_TRANSACTIONS_TABLE
+              valueFrom:
+                configMapKeyRef:
+                  name: dynamodb-config
+                  key: transactions_table
+            - name: DYNAMODB_ACCOUNTS_TABLE
+              valueFrom:
+                configMapKeyRef:
+                  name: dynamodb-config
+                  key: accounts_table
+            - name: DYNAMODB_NOTIFICATIONS_TABLE
+              valueFrom:
+                configMapKeyRef:
+                  name: dynamodb-config
+                  key: notifications_table
+            - name: SNS_TOPIC_ARN
+              valueFrom:
+                configMapKeyRef:
+                  name: sns-config
+                  key: topic_arn
+            resources:
+              requests:
+                cpu: 250m
+                memory: 256Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi

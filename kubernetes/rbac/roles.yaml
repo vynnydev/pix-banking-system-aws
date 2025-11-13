@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: microservices-role
-  namespace: microservices
+  namespace: pix-microservices
 rules:
 - apiGroups: [""]
   resources: ["pods", "services", "configmaps", "secrets"]

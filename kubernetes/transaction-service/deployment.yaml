@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: transaction-service
-  namespace: microservices
+  namespace: pix-microservices
   labels:
     app: transaction-service
     version: v1

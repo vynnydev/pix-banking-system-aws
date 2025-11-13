@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: settlement-cronjob
-  namespace: microservices
+  namespace: pix-microservices
 spec:
   schedule: "0 */6 * * *"  # Every 6 hours
   concurrencyPolicy: Forbid

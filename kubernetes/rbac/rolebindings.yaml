@@ -2,17 +2,17 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: microservices-rolebinding
-  namespace: microservices
+  namespace: pix-microservices
 subjects:
 - kind: ServiceAccount
   name: auth-service
-  namespace: microservices
+  namespace: pix-microservices
 - kind: ServiceAccount
   name: transaction-service
-  namespace: microservices
+  namespace: pix-microservices
 - kind: ServiceAccount
   name: settlement-service
-  namespace: microservices
+  namespace: pix-microservices
 roleRef:
   kind: Role
   name: microservices-role

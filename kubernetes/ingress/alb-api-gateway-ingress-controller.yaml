@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: api-gateway
-  namespace: microservices
+  namespace: pix-microservices
   annotations:
     # ALB Configuration
     alb.ingress.kubernetes.io/scheme: internet-facing

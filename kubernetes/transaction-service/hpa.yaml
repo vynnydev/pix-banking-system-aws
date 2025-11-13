@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: transaction-service-hpa
-  namespace: microservices
+  namespace: pix-microservices
   labels:
     app: transaction-service
 spec:

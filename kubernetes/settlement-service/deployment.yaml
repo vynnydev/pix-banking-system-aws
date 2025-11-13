@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: settlement-service
-  namespace: microservices
+  namespace: pix-microservices
   labels:
     app: settlement-service
     version: v1

@@ -305,10 +305,8 @@ uploads/
 user-data/
 
 # Generated diagrams (keep source .drawio files)
-*.png
 *.jpg
 *.jpeg
-!docs/diagrams/*.png
 !docs/diagrams/*.jpg
 
 # Local scripts

@@ -85,6 +85,31 @@ Sistema bancário completo para transferências PIX com arquitetura de microserv
 
 ---
 
+**Recursos Provisionados:**
+- ✅ VPC completa com subnets públicas e privadas
+- ✅ 5 Tabelas DynamoDB
+- ✅ SNS Topic + SQS Queue
+- ✅ 4 Repositórios ECR
+- ✅ EKS Cluster
+- ✅ ElastiCache Redis
+- ✅ NAT Gateway
+- ✅ Internet Gateway
+- ✅ Security Groups
+- ✅ IAM Roles com IRSA
+
+### 1.2 AWS Console - Recursos Criados
+
+**Screenshots:**
+
+![VPC Dashboard](./docs/evidence/screenshots/aws-vpc.png)
+*Figura 1.1: VPC com subnets públicas e privadas*
+
+![DynamoDB Tables](./docs/evidence/screenshots/aws-dynamodb.png)
+*Figura 1.2: Tabelas DynamoDB (users, accounts, transactions, pixkeys, notifications)*
+
+![ECR Repositories](./docs/evidence/screenshots/aws-ecr.png)
+*Figura 1.3: Repositórios ECR com imagens Docker*
+
 ## 🏢 Infraestrutura
 
 ### **Recursos AWS Criados**

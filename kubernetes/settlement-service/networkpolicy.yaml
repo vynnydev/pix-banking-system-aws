@@ -1,12 +1,13 @@
+# Network Policy - Settlement Service
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: microservices-network-policy
+  name: settlement-service-netpol
   namespace: pix-microservices
 spec:
   podSelector:
     matchLabels:
-      app: auth-service
+      app: settlement-service
   policyTypes:
   - Ingress
   - Egress
@@ -14,7 +15,8 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          name: microservices
+          name: pix-microservices
+    - podSelector: {}
     ports:
     - protocol: TCP
       port: 3000
@@ -23,8 +25,4 @@ spec:
     - namespaceSelector: {}
     ports:
     - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 6379  # Redis
-    - protocol: TCP
-      port: 3000  # Other services
+      port: 443   # AWS APIs (DynamoDB, SNS, SQS)
